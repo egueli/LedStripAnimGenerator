@@ -17,7 +17,7 @@ list_of_pixels = list(img.getdata())
 
 blobs = [
     Blob(320, 110, 25, (255, 0, 0)),
-    Blob(550, 110, 25, (255, 0, 0)),
+    Blob(350, 110, 25, (255, 0, 0)),
 ]
 
 def saturate(rgb):
@@ -30,13 +30,16 @@ def render_blob_pixel(blob, x, y):
     n = int(n * 256)
     return saturate((n, n, n))
 
-for y in range(height):
+def render_pixel(list_of_pixels, x, y):
     offset = y * width
+    index = offset + x
+    blob_pixels = [render_blob_pixel(blob, x, y) for blob in blobs]
+    pixel = tuple(sum(p) for p in zip(*blob_pixels))
+    list_of_pixels[index] = saturate(pixel)
+
+for y in range(height):
     for x in range(width):
-        index = offset + x
-        blob_pixels = [render_blob_pixel(blob, x, y) for blob in blobs]
-        pixel = tuple(sum(p) for p in zip(*blob_pixels))
-        list_of_pixels[index] = saturate(pixel)
+        render_pixel(list_of_pixels, x, y)
 
 img.putdata(list_of_pixels)
 img.show()
