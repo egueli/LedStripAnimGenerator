@@ -15,7 +15,10 @@ height = 300
 img = Image.new( mode = "RGB", size = (width, height) )
 list_of_pixels = list(img.getdata())
 
-blob = Blob(320, 110, 25, (255, 0, 0))
+blobs = [
+    Blob(320, 110, 25, (255, 0, 0)),
+    Blob(550, 110, 25, (255, 0, 0)),
+]
 
 def saturate(rgb):
     rgb = tuple(channel if channel > 0 else 0 for channel in rgb)
@@ -31,7 +34,9 @@ for y in range(height):
     offset = y * width
     for x in range(width):
         index = offset + x
-        list_of_pixels[index] = render_blob_pixel(blob, x, y)
+        blob_pixels = [render_blob_pixel(blob, x, y) for blob in blobs]
+        pixel = tuple(sum(p) for p in zip(*blob_pixels))
+        list_of_pixels[index] = saturate(pixel)
 
 img.putdata(list_of_pixels)
 img.show()
