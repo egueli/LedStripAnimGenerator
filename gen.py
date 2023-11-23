@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from random import random, randint
 
 @dataclass
 class Blob:
@@ -15,10 +16,17 @@ height = 300
 img = Image.new( mode = "RGB", size = (width, height) )
 list_of_pixels = list(img.getdata())
 
-blobs = [
-    Blob(320, 110, 25, (255, 0, 0)),
-    Blob(350, 110, 25, (255, 0, 0)),
-]
+num_blobs = 20
+
+def create_blob():
+    return Blob(x = random() * width, 
+                y = random() * height, 
+                radius = 50 + random() * 100, 
+                color = (255 * random(), 
+                         255 * random(), 
+                         255 * random()))
+
+blobs = [create_blob() for _ in range(num_blobs)]
 
 def saturate(rgb):
     rgb = tuple(channel if channel > 0 else 0 for channel in rgb)
