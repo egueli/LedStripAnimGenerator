@@ -25,16 +25,21 @@ def saturate(rgb):
     rgb = tuple(channel if channel < 255 else 255 for channel in rgb)
     return rgb
 
+def saturate_0to1(n):
+    n = n if n > 0 else 0
+    n = n if n < 1 else 1
+    return n
+
 def render_blob_pixel(blob, x, y):
     n = -(((x - blob.x)**2 + (y - blob.y)**2) - blob.radius**2) / (blob.radius**2)
-    n = int(n * 256)
-    return saturate((n, n, n))
+    n = saturate_0to1(n)
+    return tuple(n * channel for channel in blob.color)
 
 def render_pixel(list_of_pixels, x, y):
     offset = y * width
     index = offset + x
     blob_pixels = [render_blob_pixel(blob, x, y) for blob in blobs]
-    pixel = tuple(sum(p) for p in zip(*blob_pixels))
+    pixel = tuple(int(sum(p)) for p in zip(*blob_pixels))
     list_of_pixels[index] = saturate(pixel)
 
 for y in range(height):
